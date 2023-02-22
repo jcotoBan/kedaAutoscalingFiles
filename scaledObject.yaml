@@ -1,0 +1,21 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: prometheus-scaledobject
+  namespace: default
+  labels:
+    deploymentName: protodeploy
+spec:
+  scaleTargetRef:
+    name: protodeploy
+  pollingInterval: 15
+  cooldownPeriod:  30
+  minReplicaCount: 2
+  maxReplicaCount: 10
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090
+      metricName: haproxy_connections_last_two
+      threshold: '0.4'
+      query: sum(rate(haproxy_frontend_connections_total{job="haproxy", proxy="http"}[2m]))

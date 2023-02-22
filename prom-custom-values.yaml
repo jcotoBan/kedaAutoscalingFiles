@@ -1,0 +1,7 @@
+# prom-custom-values.yaml
+prometheus:
+  prometheusSpec:
+    additionalScrapeConfigs:
+      - job_name: 'haproxy'
+        static_configs:
+        - targets: ['myingress-controller-kubernetes-ingress.haproxy-controller.svc.cluster.local:1024']
